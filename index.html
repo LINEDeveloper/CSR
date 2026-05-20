@@ -17,7 +17,7 @@
     }
     
     /* =========================================
-       2. ระบบสไลด์โชว์แบบ Ken Burns
+       2. ระบบสไลด์โชว์ (ภาพเต็มใบ + พื้นหลังเบลอ)
        ========================================= */
     .slide-container { 
       position: absolute; 
@@ -27,22 +27,43 @@
       height: 100vh; 
       overflow: hidden; 
       z-index: 1;
+      background-color: #050d1a;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
     }
-    .slide-image {
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
+    
+    /* เลเยอร์ที่ 1: ภาพพื้นหลังขยายเต็มจอ + เบลอ */
+    .slide-bg {
+      position: absolute;
+      top: -10%; left: -10%; 
+      width: 120%; height: 120%; /* ขยายเผื่อขอบเบลอ */
+      object-fit: cover;
+      filter: blur(35px) brightness(0.35); /* เบลอหนักๆ และดรอปแสงลง 65% */
       opacity: 0; 
       transition: opacity 1.5s ease-in-out;
-      transform: scale(1);
+      z-index: 1;
+    }
+    .slide-bg.active { opacity: 1; }
+
+    /* เลเยอร์ที่ 2: ภาพหลัก โชว์เต็มใบไม่โดนครอป */
+    .slide-image {
+      position: relative;
+      width: 100%; height: 100%;
+      object-fit: contain; /* หัวใจหลัก: contain จะไม่ครอปภาพ */
+      opacity: 0; 
+      transition: opacity 1.5s ease-in-out;
+      transform: scale(0.95); /* ย่อลงนิดนึงให้ภาพไม่ชิดขอบจอเกินไป ดูแพงขึ้น */
+      z-index: 2;
     }
     .slide-image.active {
       opacity: 1;
-      animation: kenburns 10s ease-in-out infinite alternate;
+      /* ใช้แอนิเมชันซูมเบาๆ แทนแบบเดิม เพื่อไม่ให้ภาพล้นออกไปเยอะ */
+      animation: gentle-zoom 15s ease-in-out infinite alternate;
     }
-    @keyframes kenburns {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.08); }
+    @keyframes gentle-zoom {
+      0% { transform: scale(0.95); }
+      100% { transform: scale(1.02); }
     }
 
     /* =========================================
@@ -223,8 +244,9 @@
 </head>
 <body>
 
-  <!-- รูปภาพพื้นหลัง -->
+  <!-- รูปภาพพื้นหลัง (มีเบลอและภาพหลัก) -->
   <div class="slide-container">
+    <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
     <img id="mainImage" class="slide-image" src="" alt="Live Slide">
   </div>
 
@@ -288,18 +310,23 @@
       if (photosQueue.length === 0) return;
       
       const currentPhoto = photosQueue[currentIndex];
+      const bgEl = document.getElementById("bgImage");
       const imgEl = document.getElementById("mainImage");
       const boxEl = document.getElementById("captionBox");
 
+      bgEl.classList.remove("active");
       imgEl.classList.remove("active");
       boxEl.classList.remove("active");
 
       setTimeout(() => {
+        bgEl.src = currentPhoto.imageUrl;
         imgEl.src = currentPhoto.imageUrl;
+        
         document.getElementById("profilePic").src = currentPhoto.profilePic || "https://via.placeholder.com/60";
         document.getElementById("employeeName").innerText = currentPhoto.name;
         document.getElementById("captionText").innerText = currentPhoto.caption;
         
+        bgEl.classList.add("active");
         imgEl.classList.add("active");
         boxEl.classList.add("active");
 
