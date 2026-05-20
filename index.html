@@ -38,6 +38,15 @@
       box-shadow: 4px 0 15px rgba(0,0,0,0.03);
       z-index: 10;
     }
+    
+    /* โลโก้ TQM ที่เพิ่มเข้ามา */
+    .tqm-logo {
+      height: 55px; /* ปรับขนาดโลโก้ให้พอดี */
+      object-fit: contain;
+      object-position: left;
+      margin-bottom: 25px;
+    }
+
     .csr-title {
       font-size: 32px;
       font-weight: 600;
@@ -68,14 +77,20 @@
     /* ฝั่งขวา: พื้นหลังสีฟ้าสดใส ธีม TQM (65%) */
     .gallery-panel {
       width: 65%;
-      position: relative;
       background: linear-gradient(135deg, #e0f2fe 0%, #0072ff 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px;
+      padding: 50px 40px 40px 40px; /* เพิ่มพื้นที่ด้านบนให้ป้าย LIVE ลอยได้ */
       box-sizing: border-box;
       overflow: hidden;
+    }
+
+    /* กล่องควบคุมกรอบ (เพื่อให้ป้าย Live ลอยทะลุกรอบได้) */
+    .frame-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
     }
 
     /* กรอบสไลด์โชว์ขอบมน (Floating Frame) */
@@ -88,10 +103,11 @@
       background-color: #050d1a;
       box-shadow: 0 24px 60px rgba(0, 50, 150, 0.25); 
       border: 6px solid rgba(255, 255, 255, 0.4); 
+      perspective: 1000px; /* เพิ่มมิติ 3D ให้กรอบภาพ */
     }
 
     /* =========================================
-       2. ระบบสไลด์โชว์ (อยู่ข้างใน slide-wrapper)
+       2. ระบบสไลด์โชว์ และ เอฟเฟกต์ 3D Pop-out
        ========================================= */
     .slide-container { 
       position: absolute; 
@@ -114,40 +130,46 @@
     }
     .slide-bg.active { opacity: 1; }
 
+    /* ภาพหลักพร้อมเอฟเฟกต์เด้งมีมิติ (3D Pop) */
     .slide-image {
       position: relative;
       width: 100%; height: 100%;
-      object-fit: contain; 
+      object-fit: contain; /* รักษาภาพไม่ให้โดนครอป */
       opacity: 0; 
-      transition: opacity 1.5s ease-in-out;
-      transform: scale(0.95); 
+      /* เอฟเฟกต์เด้งดึ๋งเล็กน้อยตอนเปลี่ยนรูป */
+      transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
+      transform: scale(0.8) translateY(20px); 
       z-index: 2;
     }
     .slide-image.active {
       opacity: 1;
-      animation: gentle-zoom 15s ease-in-out infinite alternate;
+      transform: scale(1) translateY(0); 
+      /* เอฟเฟกต์ภาพลอยหายใจเบาๆ */
+      animation: breath-effect 12s infinite alternate ease-in-out 1s;
     }
-    @keyframes gentle-zoom {
-      0% { transform: scale(0.95); }
-      100% { transform: scale(1.02); }
+    @keyframes breath-effect {
+      0% { transform: scale(1) translateY(0); }
+      100% { transform: scale(1.04) translateY(-10px); }
     }
 
     /* =========================================
-       3. องค์ประกอบใน Gallery (ป้าย LIVE & แถบข้อความ)
+       3. องค์ประกอบใน Gallery (ป้าย LIVE ลอยตัว & แถบข้อความ)
        ========================================= */
+    
+    /* ป้าย LIVE ลอยทับมุมขวาบนของกรอบ */
     .live-counter {
       position: absolute; 
-      top: 30px; 
-      right: 30px; 
-      background: rgba(10, 37, 64, 0.65);
+      top: -20px; /* ดันให้ลอยทะลุกรอบขึ้นไปด้านบน */
+      right: 40px; /* ห่างจากมุมขวา */
+      background: rgba(10, 37, 64, 0.85);
       padding: 10px 24px; 
       border-radius: 50px; 
-      border: 1px solid rgba(0, 195, 255, 0.4); 
+      border: 1px solid rgba(0, 195, 255, 0.5); 
       color: white;
       font-size: 18px; 
-      z-index: 10; 
+      z-index: 20; /* ให้อยู่บนสุดเสมอ */
       backdrop-filter: blur(16px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -250,12 +272,14 @@
   <!-- ส่วนเนื้อหาหลัก แบ่งซ้าย-ขวา -->
   <div class="main-content">
     
-    <!-- ฝั่งซ้าย: โครงการ CSR -->
+    <!-- ฝั่งซ้าย: โครงการ CSR & Logo -->
     <div class="csr-panel">
+      <!-- โลโก้ TQM แทรกอยู่ส่วนบนสุด -->
+      <img src="https://img2.pic.in.th/tqm-og-image-removebg-preview_0.png" alt="TQM Logo" class="tqm-logo">
+      
       <h1 class="csr-title">CSR Project 2026</h1>
       <p class="csr-subtitle">ร่วมสร้างสรรค์สังคมดิจิทัลที่ยั่งยืน</p>
       
-      <!-- สามารถเปลี่ยน URL รูปภาพ CSR ของจริงได้ที่นี่ -->
       <img class="csr-image" src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" alt="CSR Activity">
       
       <p class="csr-desc">
@@ -267,14 +291,10 @@
     <!-- ฝั่งขวา: Live Gallery พื้นหลัง TQM -->
     <div class="gallery-panel">
       
-      <!-- กรอบรูปขอบมน (Floating Frame) -->
-      <div class="slide-wrapper">
+      <!-- คอนเทนเนอร์คุมระยะให้ป้าย Live ลอยได้ -->
+      <div class="frame-container">
         
-        <div class="slide-container">
-          <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
-          <img id="mainImage" class="slide-image" src="" alt="Live Slide">
-        </div>
-
+        <!-- ป้าย LIVE ถูกดึงมาลอยไว้ตรงมุมขวาบนของกรอบ -->
         <div class="live-counter">
           <span class="live-dot">⬤</span> 
           <span style="font-weight: 600;">LIVE</span> 
@@ -282,18 +302,29 @@
           Total: <span id="totalCount" class="total-number">0</span>
         </div>
 
-        <!-- แถบแคปชั่นด้านล่างแนวยาว -->
-        <div id="captionBox" class="glass-box">
-          <div class="employee-info">
-            <img id="profilePic" class="profile-pic" src="" alt="Profile">
-            <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+        <!-- กรอบรูปขอบมนหลัก -->
+        <div class="slide-wrapper">
+          
+          <!-- ระบบแอนิเมชันรูป 3D Pop-out -->
+          <div class="slide-container">
+            <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
+            <img id="mainImage" class="slide-image" src="" alt="Live Slide">
           </div>
-          <div class="caption-container">
-            <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
-          </div>
-        </div>
 
-      </div> <!-- ปิดกรอบรูปขอบมน -->
+          <!-- แถบแคปชั่นด้านล่างแนวยาว -->
+          <div id="captionBox" class="glass-box">
+            <div class="employee-info">
+              <img id="profilePic" class="profile-pic" src="" alt="Profile">
+              <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+            </div>
+            <div class="caption-container">
+              <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
+            </div>
+          </div>
+
+        </div> <!-- ปิดกรอบรูปขอบมน -->
+        
+      </div> <!-- ปิดกรอบคุมระยะ -->
 
     </div>
   </div>
