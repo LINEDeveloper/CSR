@@ -10,7 +10,7 @@
     body { 
       margin: 0; 
       overflow: hidden; 
-      background-color: #f0f5fa; /* สีพื้นหลังหลักที่สว่างขึ้นนิดหน่อย */
+      background-color: #f0f5fa; 
       font-family: 'Prompt', sans-serif; 
       display: flex;
       flex-direction: column;
@@ -22,7 +22,7 @@
        ========================================= */
     .main-content {
       display: flex;
-      flex: 1; /* กินพื้นที่ทั้งหมดที่เหลือจาก Footer */
+      flex: 1;
       overflow: hidden;
     }
 
@@ -65,21 +65,38 @@
       line-height: 1.6;
     }
 
-    /* ฝั่งขวา: Live Gallery (65%) */
+    /* ฝั่งขวา: พื้นหลังสีฟ้าสดใส ธีม TQM (65%) */
     .gallery-panel {
       width: 65%;
       position: relative;
-      background-color: #050d1a;
+      background: linear-gradient(135deg, #e0f2fe 0%, #0072ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px; /* เว้นระยะขอบรอบๆ เพื่อให้กรอบภาพลอยขึ้นมา */
+      box-sizing: border-box;
       overflow: hidden;
     }
 
+    /* กรอบสไลด์โชว์ขอบมน (Floating Frame) */
+    .slide-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 32px; 
+      overflow: hidden;
+      background-color: #050d1a;
+      box-shadow: 0 24px 60px rgba(0, 50, 150, 0.25); 
+      border: 6px solid rgba(255, 255, 255, 0.4); 
+    }
+
     /* =========================================
-       2. ระบบสไลด์โชว์ (ถูกจำกัดให้อยู่แค่ฝั่งขวา)
+       2. ระบบสไลด์โชว์ (อยู่ข้างใน slide-wrapper)
        ========================================= */
     .slide-container { 
       position: absolute; 
       top: 0; left: 0; 
-      width: 100%; height: 100%; /* 100% ของ gallery-panel */
+      width: 100%; height: 100%; 
       display: flex; 
       align-items: center; 
       justify-content: center;
@@ -210,27 +227,34 @@
       </p>
     </div>
 
-    <!-- ฝั่งขวา: Live Gallery -->
+    <!-- ฝั่งขวา: Live Gallery พื้นหลัง TQM -->
     <div class="gallery-panel">
-      <div class="slide-container">
-        <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
-        <img id="mainImage" class="slide-image" src="" alt="Live Slide">
-      </div>
-
-      <div class="live-counter">
-        <span class="live-dot">⬤</span> 
-        <span style="font-weight: 600;">LIVE</span> 
-        <span style="opacity: 0.5;">|</span> 
-        Total: <span id="totalCount" class="total-number">0</span>
-      </div>
-
-      <div id="captionBox" class="glass-box">
-        <div class="employee-info">
-          <img id="profilePic" class="profile-pic" src="" alt="Profile">
-          <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+      
+      <!-- กรอบรูปขอบมน (Floating Frame) -->
+      <div class="slide-wrapper">
+        
+        <div class="slide-container">
+          <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
+          <img id="mainImage" class="slide-image" src="" alt="Live Slide">
         </div>
-        <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
-      </div>
+
+        <div class="live-counter">
+          <span class="live-dot">⬤</span> 
+          <span style="font-weight: 600;">LIVE</span> 
+          <span style="opacity: 0.5;">|</span> 
+          Total: <span id="totalCount" class="total-number">0</span>
+        </div>
+
+        <div id="captionBox" class="glass-box">
+          <div class="employee-info">
+            <img id="profilePic" class="profile-pic" src="" alt="Profile">
+            <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+          </div>
+          <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
+        </div>
+
+      </div> <!-- ปิดกรอบรูปขอบมน -->
+
     </div>
     
   </div>
@@ -241,7 +265,7 @@
     <div>Channel Communication | <span class="footer-highlight">Contact for System Development & Troubleshooting</span></div>
   </footer>
 
-  <!-- สคริปต์เชื่อมต่อ API (คงฟังก์ชันเดิมทั้งหมด) -->
+  <!-- สคริปต์เชื่อมต่อ API -->
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbz2GUgqs5WAlVeXM9UnwyOkD2Mimn7mSR6BNTDOkJTsnl31d_XgCW1RywVHbS6w6vsS9w/exec"; 
     let photosQueue = [];
