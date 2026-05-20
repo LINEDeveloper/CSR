@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ส่งภาพประทับใจ</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: 'Prompt', sans-serif; background: #0A192F; color: white; padding: 20px; }
+    .container { max-width: 400px; margin: 0 auto; background: #112240; padding: 20px; border-radius: 12px; border: 1px solid #00C3FF; }
+    input, textarea, button { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 12px; border-radius: 8px; }
+    textarea { background: #0A192F; border: 1px solid #00C3FF; color: white; }
+    button { background: #00C3FF; color: #0A192F; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
+    #loading { display: none; text-align: center; margin-top: 10px; color: #00C3FF; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center; color:#00C3FF;">Share Your Moment</h2>
+    <input type="file" id="imageInput" accept="image/*" style="color:white;">
+    <textarea id="captionInput" rows="3" placeholder="เขียนแคปชั่นของคุณ..."></textarea>
+    <button onclick="submitData()">ส่งรูปภาพ</button>
+    <div id="loading">กำลังอัปโหลด... กรุณารอสักครู่</div>
+  </div>
+
+  <script>
+    const GAS_URL = "ใส่_WEB_APP_URL_ที่นี่"; // URL จาก GAS
+    
+    async function main() {
+      await liff.init({ liffId: "ใส่_LIFF_ID_ที่นี่" });
+      if (!liff.isLoggedIn()) liff.login();
+    }
+    main();
+
+    async function submitData() {
+      const file = document.getElementById("imageInput").files[0];
+      const caption = document.getElementById("captionInput").value;
+      if (!file) return alert("กรุณาเลือกรูปภาพ");
+
+      document.getElementById("loading").style.display = "block";
+      const profile = await liff.getProfile();
+      
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async function () {
+        const payload = {
+          displayName: profile.displayName,
+          pictureUrl: profile.pictureUrl,
+          caption: caption,
+          imageBase64: reader.result,
+          mimeType: file.type
+        };
+
+        await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+        liff.closeWindow(); // ปิดหน้าจออัตโนมัติเมื่อส่งสำเร็จ
+      };
+    }
+  </script>
+</body>
+</html>
