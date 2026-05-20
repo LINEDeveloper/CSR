@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Event Gallery & CSR Project</title>
+  <title>TQM Live Gallery - Fresh Blue Edition</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
     
     body { 
       margin: 0; 
       overflow: hidden; 
-      background-color: #f0f5fa; 
+      background-color: #ffffff; 
       font-family: 'Prompt', sans-serif; 
       display: flex;
       flex-direction: column;
@@ -29,54 +29,57 @@
     /* ฝั่งซ้าย: CSR Project (35%) */
     .csr-panel {
       width: 35%;
-      background: linear-gradient(180deg, #ffffff 0%, #eef6fc 100%);
+      background: #ffffff;
       padding: 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      border-right: 1px solid #d1e5f4;
-      box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+      border-right: 1px solid #e0f2fe;
       z-index: 10;
     }
     
+    /* โลโก้ TQM */
     .tqm-logo {
-      height: 55px; 
+      height: 65px; 
       object-fit: contain;
       object-position: left;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
     }
 
     .csr-title {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 600;
-      color: #0072ff;
+      color: #004a99; /* สีน้ำเงิน TQM */
       margin-bottom: 10px;
     }
     .csr-subtitle {
-      font-size: 18px;
-      color: #4a5568;
+      font-size: 20px;
+      color: #00ADEF; /* สีฟ้า TQM */
       margin-bottom: 30px;
-      line-height: 1.5;
+      font-weight: 400;
     }
     .csr-image {
       width: 100%;
-      height: 250px;
+      height: 260px;
       object-fit: cover;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 114, 255, 0.15);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 173, 239, 0.2);
       margin-bottom: 30px;
+      border: 4px solid #f0f9ff;
     }
     .csr-desc {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 300;
-      color: #2c3e50;
-      line-height: 1.6;
+      color: #4b5563;
+      line-height: 1.7;
     }
 
-    /* ฝั่งขวา: พื้นหลังสีฟ้าสดใส ธีม TQM (65%) */
+    /* ฝั่งขวา: พื้นหลังสีฟ้าสดใส (65%) */
     .gallery-panel {
       width: 65%;
-      background: linear-gradient(135deg, #e0f2fe 0%, #0072ff 100%);
+      position: relative;
+      /* ใช้สีฟ้า Gradient ตามธีม TQM */
+      background: linear-gradient(135deg, #00ADEF 0%, #0072ff 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,27 +88,27 @@
       overflow: hidden;
     }
 
-    /* กล่องควบคุมกรอบ (ปรับให้กรอบเล็กลง) */
+    /* กล่องควบคุมเฟรม */
     .frame-container {
       position: relative;
-      width: 82%; 
-      height: 78%; 
+      width: 85%; 
+      height: 80%; 
     }
 
-    /* กรอบสไลด์โชว์ขอบมน (Floating Frame) */
+    /* กรอบสไลด์โชว์ขอบมนลอยตัว */
     .slide-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
-      border-radius: 28px; 
+      border-radius: 40px; /* เพิ่มความมนให้ดูทันสมัย */
       overflow: hidden;
-      background-color: #050d1a;
-      box-shadow: 0 30px 60px rgba(0, 40, 120, 0.3); 
-      border: 5px solid rgba(255, 255, 255, 0.5); 
+      background-color: #000;
+      box-shadow: 0 35px 70px rgba(0, 50, 150, 0.4); 
+      border: 8px solid #ffffff; /* ขอบขาวหนาดูพรีเมียม */
     }
 
     /* =========================================
-       2. ระบบสไลด์โชว์ (ภาพกางเต็ม 100% ไม่มีขอบดำ)
+       2. ระบบสไลด์โชว์ (ภาพเต็มเฟรม 100% ไม่มีขอบดำ)
        ========================================= */
     .slide-container { 
       position: absolute; 
@@ -118,23 +121,23 @@
     
     .slide-bg {
       position: absolute;
-      top: -10%; left: -10%; 
-      width: 120%; height: 120%; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
       object-fit: cover;
-      filter: blur(30px) brightness(0.4); 
+      filter: blur(20px) brightness(0.5); 
       opacity: 0; 
       transition: opacity 1s ease-in-out;
       z-index: 1;
     }
     .slide-bg.active { opacity: 1; }
 
-    /* ภาพหลัก */
+    /* ภาพหลัก กางเต็มเฟรมเป๊ะๆ */
     .slide-image {
       position: relative;
       width: 100%; height: 100%;
-      object-fit: cover; /* เปลี่ยนเป็น cover เพื่อกางรูปให้เต็มกรอบเป๊ะๆ ไม่มีขอบดำ */
+      object-fit: cover; /* บังคับภาพกางเต็มกรอบ 100% ไม่มีขอบดำแน่นอน */
       opacity: 0; 
-      transition: opacity 1s ease-in-out; 
+      transition: opacity 1.2s ease-in-out; 
       z-index: 2;
     }
     .slide-image.active {
@@ -142,48 +145,47 @@
     }
 
     /* =========================================
-       3. องค์ประกอบใน Gallery (ป้าย LIVE ลอยตัว & แถบข้อความ)
+       3. องค์ประกอบเสริม (ป้าย LIVE & แถบแคปชั่น)
        ========================================= */
     
-    /* ป้าย LIVE ลอยทับมุมขวาบนของกรอบเฟรม */
+    /* ป้าย LIVE ลอยไว้บนขอบเฟรมด้านบน */
     .live-counter {
       position: absolute; 
-      top: -25px; /* ดันให้ลอยขึ้นไปคาบเกี่ยวเส้นขอบด้านบน */
-      right: 30px; /* ขยับเข้ามาจากมุมขวานิดหน่อยให้ดูสวยงาม */
-      background: rgba(10, 37, 64, 0.9);
-      padding: 8px 22px; 
+      top: -28px; /* ลอยทับขอบขาวด้านบน */
+      right: 40px; 
+      background: #ffffff;
+      padding: 8px 25px; 
       border-radius: 50px; 
-      border: 1px solid rgba(0, 195, 255, 0.6); 
-      color: white;
-      font-size: 17px; 
-      z-index: 20; 
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      border: 2px solid #00ADEF; 
+      color: #004a99;
+      font-size: 18px; 
+      font-weight: 600;
+      z-index: 30; 
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
-    .live-dot { color: #FF3D00; font-size: 14px; animation: blink 1.5s infinite; }
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-    .total-number { color: #00C3FF; font-weight: 600; font-size: 20px; }
+    .live-dot { color: #FF3D00; animation: blink 1.5s infinite; }
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+    .total-number { color: #00ADEF; font-size: 22px; }
 
-    /* แถบข้อความด้านล่างสุด (Full-width Bottom Bar) */
+    /* แถบข้อความแนวยาวด้านล่างพอดีกรอบ */
     .glass-box {
       position: absolute; 
       bottom: 0; 
       left: 0; 
       width: 100%; 
-      box-sizing: border-box;
-      padding: 16px 24px;
-      background: linear-gradient(to top, rgba(5, 13, 26, 0.95) 0%, rgba(5, 13, 26, 0.75) 100%); 
-      backdrop-filter: blur(12px); 
-      border-top: 3px solid #00C3FF; 
+      padding: 20px 35px;
+      background: linear-gradient(to top, rgba(0, 30, 60, 0.9) 0%, rgba(0, 30, 60, 0.5) 100%); 
+      backdrop-filter: blur(10px); 
+      border-top: 4px solid #00ADEF; 
       color: #fff;
       z-index: 10;
       opacity: 0; 
       display: flex;
       align-items: center;
-      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+      transition: all 0.8s ease-in-out;
       transform: translateY(100%);
     }
     .glass-box.active { 
@@ -194,140 +196,98 @@
     .employee-info { 
       display: flex; 
       align-items: center; 
-      min-width: 220px; 
-      padding-right: 20px;
-      border-right: 1px solid rgba(255, 255, 255, 0.2); 
+      min-width: 240px; 
+      border-right: 1px solid rgba(255, 255, 255, 0.3); 
+      margin-right: 25px;
     }
     .profile-pic { 
-      width: 50px; 
-      height: 50px; 
-      border-radius: 50%; 
-      border: 2px solid #00C3FF; 
-      margin-right: 12px; 
-      object-fit: cover; 
-      flex-shrink: 0;
+      width: 55px; height: 55px; 
+      border-radius: 50%; border: 2px solid #ffffff; 
+      margin-right: 15px; object-fit: cover; 
     }
-    .name { 
-      font-size: 17px; 
-      font-weight: 600; 
-      color: #80D8FF; 
-      margin: 0; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-      max-width: 160px;
-    }
-
-    .caption-container {
-      flex: 1; 
-      padding-left: 20px;
-    }
-    .caption { 
-      font-size: 20px; 
-      font-weight: 300; 
-      line-height: 1.4; 
-      margin: 0; 
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    .name { font-size: 19px; font-weight: 600; color: #80D8FF; margin: 0; }
+    .caption-container { flex: 1; }
+    .caption { font-size: 22px; font-weight: 300; line-height: 1.4; margin: 0; }
 
     /* =========================================
-       4. Footer (แถบด้านล่างสุดแบบเดิม)
+       4. Footer บริษัท
        ========================================= */
     .system-footer {
-      height: 40px;
-      background-color: #030812;
-      color: #a0aec0;
+      height: 45px;
+      background-color: #f8fafc;
+      color: #64748b;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
-      font-size: 13px;
-      font-weight: 300;
-      border-top: 1px solid #1a2a40;
+      font-size: 14px;
+      border-top: 1px solid #e2e8f0;
     }
-    .footer-highlight {
-      color: #00C3FF;
-      font-weight: 400;
-    }
+    .footer-highlight { color: #00ADEF; font-weight: 500; }
   </style>
 </head>
 <body>
 
-  <!-- ส่วนเนื้อหาหลัก แบ่งซ้าย-ขวา -->
   <div class="main-content">
     
-    <!-- ฝั่งซ้าย: โครงการ CSR & Logo -->
     <div class="csr-panel">
-      <!-- โลโก้ TQM แทรกอยู่ส่วนบนสุด -->
       <img src="https://img2.pic.in.th/tqm-og-image-removebg-preview_0.png" alt="TQM Logo" class="tqm-logo">
       
       <h1 class="csr-title">CSR Project 2026</h1>
-      <p class="csr-subtitle">ร่วมสร้างสรรค์สังคมดิจิทัลที่ยั่งยืน</p>
+      <p class="csr-subtitle">"ส่งต่อความคุ้มครอง เพื่อสังคมที่ยั่งยืน"</p>
       
       <img class="csr-image" src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" alt="CSR Activity">
       
       <p class="csr-desc">
-        กิจกรรมเพื่อสังคมที่เรามุ่งมั่นส่งเสริมการเรียนรู้และพัฒนาศักยภาพของคนในชุมชน 
-        เพื่อตอกย้ำวิสัยทัศน์ในการเชื่อมโยงทุกคนเข้าสู่โลกแห่งเทคโนโลยีอย่างเท่าเทียมและยั่งยืน
+        ทีคิวเอ็ม มุ่งมั่นในการเป็นส่วนหนึ่งที่ช่วยยกระดับคุณภาพชีวิตของคนในสังคม 
+        ผ่านกิจกรรมแบ่งปันความสุขและสร้างความปลอดภัยในทุกมิติ 
+        เพราะเราเชื่อว่าการเติบโตที่แท้จริงต้องเดินไปพร้อมกับการมีสังคมที่ดี
       </p>
     </div>
 
-    <!-- ฝั่งขวา: Live Gallery พื้นหลัง TQM -->
     <div class="gallery-panel">
       
-      <!-- คอนเทนเนอร์คุมระยะ -->
       <div class="frame-container">
         
-        <!-- ป้าย LIVE ลอยไว้ตรงขอบเฟรมด้านบน -->
         <div class="live-counter">
           <span class="live-dot">⬤</span> 
-          <span style="font-weight: 600;">LIVE</span> 
-          <span style="opacity: 0.5;">|</span> 
+          <span>LIVE</span> 
+          <span style="opacity: 0.3; margin: 0 5px;">|</span> 
           Total: <span id="totalCount" class="total-number">0</span>
         </div>
 
-        <!-- กรอบรูปขอบมนหลัก -->
         <div class="slide-wrapper">
-          
           <div class="slide-container">
-            <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
-            <img id="mainImage" class="slide-image" src="" alt="Live Slide">
+            <img id="bgImage" class="slide-bg" src="" alt="Blur">
+            <img id="mainImage" class="slide-image" src="" alt="Main Photo">
           </div>
 
-          <!-- แถบแคปชั่นด้านล่างแนวยาว -->
           <div id="captionBox" class="glass-box">
             <div class="employee-info">
-              <img id="profilePic" class="profile-pic" src="" alt="Profile">
-              <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+              <img id="profilePic" class="profile-pic" src="" alt="User">
+              <h3 id="employeeName" class="name">TQM Family</h3>
             </div>
             <div class="caption-container">
-              <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
+              <p id="captionText" class="caption">ร่วมแบ่งปันรอยยิ้มและความประทับใจ...</p>
             </div>
           </div>
+        </div>
 
-        </div> <!-- ปิดกรอบรูปขอบมน -->
-        
-      </div> <!-- ปิดกรอบคุมระยะ -->
+      </div>
 
     </div>
   </div>
 
-  <!-- ส่วน Footer ด้านล่างสุด -->
   <footer class="system-footer">
-    <div>&copy; บริษัท ทีคิวเอ็ม อินชัวร์รันส์ โบรคเกอร์ จำกัด 123 ถนนลาดปลาเค้า แขวงจรเข้บัว เขตลาดพร้าว กรุงเทพฯ 10230</div>
-    <div>Channel Communication | <span class="footer-highlight">Contact for System Development & Troubleshooting</span></div>
+    <div>&copy; บริษัท ทีคิวเอ็ม อินชัวร์รันส์ โบรคเกอร์ จำกัด | 123 ถนนลาดปลาเค้า ลาดพร้าว กรุงเทพฯ</div>
+    <div>Digital Engagement System | <span class="footer-highlight">TQM Insurance Broker</span></div>
   </footer>
 
-  <!-- สคริปต์เชื่อมต่อ API -->
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbz2GUgqs5WAlVeXM9UnwyOkD2Mimn7mSR6BNTDOkJTsnl31d_XgCW1RywVHbS6w6vsS9w/exec"; 
     let photosQueue = [];
     let currentIndex = 0;
 
-    // ดึงข้อมูลรูปภาพจาก Google Sheets
     async function fetchPhotos() {
       try {
         let res = await fetch(GAS_URL);
@@ -336,13 +296,11 @@
         if(data.photos && data.photos.length > 0) {
           photosQueue = data.photos;
         }
-      } catch (err) { console.error("Error fetching data:", err); }
+      } catch (err) { console.error("Error:", err); }
     }
 
-    // ฟังก์ชันสลับภาพและข้อความ
     function showNextSlide() {
       if (photosQueue.length === 0) return;
-      
       const currentPhoto = photosQueue[currentIndex];
       const bgEl = document.getElementById("bgImage");
       const imgEl = document.getElementById("mainImage");
@@ -355,7 +313,6 @@
       setTimeout(() => {
         bgEl.src = currentPhoto.imageUrl;
         imgEl.src = currentPhoto.imageUrl;
-        
         document.getElementById("profilePic").src = currentPhoto.profilePic || "https://via.placeholder.com/60";
         document.getElementById("employeeName").innerText = currentPhoto.name;
         document.getElementById("captionText").innerText = currentPhoto.caption;
@@ -363,12 +320,10 @@
         bgEl.classList.add("active");
         imgEl.classList.add("active");
         boxEl.classList.add("active");
-
         currentIndex = (currentIndex + 1) % photosQueue.length; 
       }, 1200); 
     }
 
-    // เริ่มการทำงานของระบบ
     fetchPhotos(); 
     setInterval(fetchPhotos, 10000); 
     setInterval(showNextSlide, 7000); 
