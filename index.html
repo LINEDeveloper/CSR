@@ -39,9 +39,8 @@
       z-index: 10;
     }
     
-    /* โลโก้ TQM ที่เพิ่มเข้ามา */
     .tqm-logo {
-      height: 55px; /* ปรับขนาดโลโก้ให้พอดี */
+      height: 55px; 
       object-fit: contain;
       object-position: left;
       margin-bottom: 25px;
@@ -81,16 +80,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 50px 40px 40px 40px; /* เพิ่มพื้นที่ด้านบนให้ป้าย LIVE ลอยได้ */
+      padding: 0; /* เอา Padding เดิมออก ไปใช้ใน frame-container แทน */
       box-sizing: border-box;
       overflow: hidden;
     }
 
-    /* กล่องควบคุมกรอบ (เพื่อให้ป้าย Live ลอยทะลุกรอบได้) */
+    /* กล่องควบคุมกรอบ (ปรับให้กรอบเล็กลง) */
     .frame-container {
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: 82%; /* ปรับให้แคบลง */
+      height: 78%; /* ปรับให้เตี้ยลง */
     }
 
     /* กรอบสไลด์โชว์ขอบมน (Floating Frame) */
@@ -98,16 +97,15 @@
       position: relative;
       width: 100%;
       height: 100%;
-      border-radius: 32px; 
+      border-radius: 28px; /* กรอบโค้งมน */
       overflow: hidden;
       background-color: #050d1a;
-      box-shadow: 0 24px 60px rgba(0, 50, 150, 0.25); 
-      border: 6px solid rgba(255, 255, 255, 0.4); 
-      perspective: 1000px; /* เพิ่มมิติ 3D ให้กรอบภาพ */
+      box-shadow: 0 30px 60px rgba(0, 40, 120, 0.3); 
+      border: 5px solid rgba(255, 255, 255, 0.5); 
     }
 
     /* =========================================
-       2. ระบบสไลด์โชว์ และ เอฟเฟกต์ 3D Pop-out
+       2. ระบบสไลด์โชว์ (ภาพชนกรอบพอดีเป๊ะ)
        ========================================= */
     .slide-container { 
       position: absolute; 
@@ -123,33 +121,25 @@
       top: -10%; left: -10%; 
       width: 120%; height: 120%; 
       object-fit: cover;
-      filter: blur(35px) brightness(0.35); 
+      filter: blur(30px) brightness(0.4); 
       opacity: 0; 
-      transition: opacity 1.5s ease-in-out;
+      transition: opacity 1s ease-in-out;
       z-index: 1;
     }
     .slide-bg.active { opacity: 1; }
 
-    /* ภาพหลักพร้อมเอฟเฟกต์เด้งมีมิติ (3D Pop) */
+    /* ภาพหลัก */
     .slide-image {
       position: relative;
       width: 100%; height: 100%;
-      object-fit: contain; /* รักษาภาพไม่ให้โดนครอป */
+      object-fit: contain; /* รักษาสัดส่วนภาพไม่ให้โดนครอป */
       opacity: 0; 
-      /* เอฟเฟกต์เด้งดึ๋งเล็กน้อยตอนเปลี่ยนรูป */
-      transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
-      transform: scale(0.8) translateY(20px); 
+      transition: opacity 1s ease-in-out; 
       z-index: 2;
     }
     .slide-image.active {
       opacity: 1;
-      transform: scale(1) translateY(0); 
-      /* เอฟเฟกต์ภาพลอยหายใจเบาๆ */
-      animation: breath-effect 12s infinite alternate ease-in-out 1s;
-    }
-    @keyframes breath-effect {
-      0% { transform: scale(1) translateY(0); }
-      100% { transform: scale(1.04) translateY(-10px); }
+      /* ลบเอฟเฟกต์หด/ขยายออก เพื่อให้ภาพวางชนขอบเฟรมพอดีเป๊ะ 100% เสมอ */
     }
 
     /* =========================================
@@ -159,15 +149,15 @@
     /* ป้าย LIVE ลอยทับมุมขวาบนของกรอบ */
     .live-counter {
       position: absolute; 
-      top: -20px; /* ดันให้ลอยทะลุกรอบขึ้นไปด้านบน */
-      right: 40px; /* ห่างจากมุมขวา */
-      background: rgba(10, 37, 64, 0.85);
-      padding: 10px 24px; 
+      top: -22px; 
+      right: 30px; 
+      background: rgba(10, 37, 64, 0.9);
+      padding: 8px 22px; 
       border-radius: 50px; 
-      border: 1px solid rgba(0, 195, 255, 0.5); 
+      border: 1px solid rgba(0, 195, 255, 0.6); 
       color: white;
-      font-size: 18px; 
-      z-index: 20; /* ให้อยู่บนสุดเสมอ */
+      font-size: 17px; 
+      z-index: 20; 
       backdrop-filter: blur(16px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       display: flex;
@@ -176,7 +166,7 @@
     }
     .live-dot { color: #FF3D00; font-size: 14px; animation: blink 1.5s infinite; }
     @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-    .total-number { color: #00C3FF; font-weight: 600; font-size: 22px; }
+    .total-number { color: #00C3FF; font-weight: 600; font-size: 20px; }
 
     /* แถบข้อความด้านล่างสุด (Full-width Bottom Bar) */
     .glass-box {
@@ -185,7 +175,7 @@
       left: 0; 
       width: 100%; 
       box-sizing: border-box;
-      padding: 20px 30px;
+      padding: 16px 24px;
       background: linear-gradient(to top, rgba(5, 13, 26, 0.95) 0%, rgba(5, 13, 26, 0.75) 100%); 
       backdrop-filter: blur(12px); 
       border-top: 3px solid #00C3FF; 
@@ -202,41 +192,39 @@
       transform: translateY(0);
     }
     
-    /* โซนข้อมูลพนักงาน (ฝั่งซ้ายของแถบ) */
     .employee-info { 
       display: flex; 
       align-items: center; 
-      min-width: 250px; 
-      padding-right: 25px;
+      min-width: 220px; 
+      padding-right: 20px;
       border-right: 1px solid rgba(255, 255, 255, 0.2); 
     }
     .profile-pic { 
-      width: 55px; 
-      height: 55px; 
+      width: 50px; 
+      height: 50px; 
       border-radius: 50%; 
       border: 2px solid #00C3FF; 
-      margin-right: 15px; 
+      margin-right: 12px; 
       object-fit: cover; 
       flex-shrink: 0;
     }
     .name { 
-      font-size: 18px; 
+      font-size: 17px; 
       font-weight: 600; 
       color: #80D8FF; 
       margin: 0; 
       white-space: nowrap; 
       overflow: hidden; 
       text-overflow: ellipsis; 
-      max-width: 180px;
+      max-width: 160px;
     }
 
-    /* โซนข้อความแคปชั่น (ฝั่งขวาของแถบ) */
     .caption-container {
       flex: 1; 
-      padding-left: 25px;
+      padding-left: 20px;
     }
     .caption { 
-      font-size: 22px; 
+      font-size: 20px; 
       font-weight: 300; 
       line-height: 1.4; 
       margin: 0; 
@@ -291,7 +279,7 @@
     <!-- ฝั่งขวา: Live Gallery พื้นหลัง TQM -->
     <div class="gallery-panel">
       
-      <!-- คอนเทนเนอร์คุมระยะให้ป้าย Live ลอยได้ -->
+      <!-- คอนเทนเนอร์คุมระยะให้ป้าย Live ลอยได้ และกรอบเล็กลง -->
       <div class="frame-container">
         
         <!-- ป้าย LIVE ถูกดึงมาลอยไว้ตรงมุมขวาบนของกรอบ -->
@@ -305,7 +293,6 @@
         <!-- กรอบรูปขอบมนหลัก -->
         <div class="slide-wrapper">
           
-          <!-- ระบบแอนิเมชันรูป 3D Pop-out -->
           <div class="slide-container">
             <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
             <img id="mainImage" class="slide-image" src="" alt="Live Slide">
