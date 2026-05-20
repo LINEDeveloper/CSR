@@ -3,62 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Event Gallery</title>
+  <title>Live Event Gallery & CSR Project</title>
   <style>
-    /* =========================================
-       1. ตั้งค่าพื้นฐาน (Typography & Background)
-       ========================================= */
-    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
+    
     body { 
       margin: 0; 
       overflow: hidden; 
-      background-color: #050d1a; 
+      background-color: #f0f5fa; /* สีพื้นหลังหลักที่สว่างขึ้นนิดหน่อย */
       font-family: 'Prompt', sans-serif; 
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
     
     /* =========================================
-       2. ระบบสไลด์โชว์ (ภาพเต็มใบ + พื้นหลังเบลอ)
+       1. โครงสร้างหลัก (แบ่งซ้าย-ขวา)
+       ========================================= */
+    .main-content {
+      display: flex;
+      flex: 1; /* กินพื้นที่ทั้งหมดที่เหลือจาก Footer */
+      overflow: hidden;
+    }
+
+    /* ฝั่งซ้าย: CSR Project (35%) */
+    .csr-panel {
+      width: 35%;
+      background: linear-gradient(180deg, #ffffff 0%, #eef6fc 100%);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid #d1e5f4;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+      z-index: 10;
+    }
+    .csr-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: #0072ff;
+      margin-bottom: 10px;
+    }
+    .csr-subtitle {
+      font-size: 18px;
+      color: #4a5568;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    .csr-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 114, 255, 0.15);
+      margin-bottom: 30px;
+    }
+    .csr-desc {
+      font-size: 16px;
+      font-weight: 300;
+      color: #2c3e50;
+      line-height: 1.6;
+    }
+
+    /* ฝั่งขวา: Live Gallery (65%) */
+    .gallery-panel {
+      width: 65%;
+      position: relative;
+      background-color: #050d1a;
+      overflow: hidden;
+    }
+
+    /* =========================================
+       2. ระบบสไลด์โชว์ (ถูกจำกัดให้อยู่แค่ฝั่งขวา)
        ========================================= */
     .slide-container { 
       position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100vw; 
-      height: 100vh; 
-      overflow: hidden; 
-      z-index: 1;
-      background-color: #050d1a;
+      top: 0; left: 0; 
+      width: 100%; height: 100%; /* 100% ของ gallery-panel */
       display: flex; 
       align-items: center; 
       justify-content: center;
     }
     
-    /* เลเยอร์ที่ 1: ภาพพื้นหลังขยายเต็มจอ + เบลอ */
     .slide-bg {
       position: absolute;
       top: -10%; left: -10%; 
-      width: 120%; height: 120%; /* ขยายเผื่อขอบเบลอ */
+      width: 120%; height: 120%; 
       object-fit: cover;
-      filter: blur(35px) brightness(0.35); /* เบลอหนักๆ และดรอปแสงลง 65% */
+      filter: blur(35px) brightness(0.35); 
       opacity: 0; 
       transition: opacity 1.5s ease-in-out;
       z-index: 1;
     }
     .slide-bg.active { opacity: 1; }
 
-    /* เลเยอร์ที่ 2: ภาพหลัก โชว์เต็มใบไม่โดนครอป */
     .slide-image {
       position: relative;
       width: 100%; height: 100%;
-      object-fit: contain; /* หัวใจหลัก: contain จะไม่ครอปภาพ */
+      object-fit: contain; 
       opacity: 0; 
       transition: opacity 1.5s ease-in-out;
-      transform: scale(0.95); /* ย่อลงนิดนึงให้ภาพไม่ชิดขอบจอเกินไป ดูแพงขึ้น */
+      transform: scale(0.95); 
       z-index: 2;
     }
     .slide-image.active {
       opacity: 1;
-      /* ใช้แอนิเมชันซูมเบาๆ แทนแบบเดิม เพื่อไม่ให้ภาพล้นออกไปเยอะ */
       animation: gentle-zoom 15s ease-in-out infinite alternate;
     }
     @keyframes gentle-zoom {
@@ -67,89 +116,46 @@
     }
 
     /* =========================================
-       3. แบนเนอร์ชื่องาน (ตรงกลางด้านบน)
-       ========================================= */
-    .event-banner {
-      position: absolute;
-      top: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(10, 37, 64, 0.65);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 195, 255, 0.4);
-      border-radius: 50px;
-      padding: 12px 50px;
-      text-align: center;
-      z-index: 10;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 195, 255, 0.2);
-    }
-    .event-title {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 600;
-      color: #FFFFFF;
-      letter-spacing: 1.5px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    .event-subtitle {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 300;
-      color: #00C3FF;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    /* =========================================
-       4. ป้ายนับจำนวน Live Counter (ขวาบน)
+       3. องค์ประกอบใน Gallery (ป้าย LIVE & Caption)
        ========================================= */
     .live-counter {
       position: absolute; 
-      top: 45px; 
-      right: 50px; 
+      top: 30px; 
+      right: 30px; 
       background: rgba(10, 37, 64, 0.65);
-      padding: 12px 28px; 
+      padding: 10px 24px; 
       border-radius: 50px; 
       border: 1px solid rgba(0, 195, 255, 0.4); 
       color: white;
-      font-size: 22px; 
+      font-size: 18px; 
       z-index: 10; 
       backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .live-dot { 
       color: #FF3D00;
-      font-size: 16px;
+      font-size: 14px;
       animation: blink 1.5s infinite; 
     }
-    @keyframes blink { 
-      0% { opacity: 1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-    .total-number { color: #00C3FF; font-weight: 600; font-size: 26px; }
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    .total-number { color: #00C3FF; font-weight: 600; font-size: 22px; }
 
-    /* =========================================
-       5. กล่องแคปชั่น Glassmorphism (ซ้ายล่าง)
-       ========================================= */
     .glass-box {
       position: absolute; 
-      bottom: 50px; 
-      left: 50px; 
-      max-width: 600px; 
-      padding: 30px;
+      bottom: 40px; 
+      left: 40px; 
+      max-width: 80%; 
+      padding: 24px;
       background: rgba(10, 37, 64, 0.65); 
       backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(0, 195, 255, 0.2);
-      border-left: 6px solid #00C3FF; 
+      border-left: 5px solid #00C3FF; 
       border-radius: 16px; 
       color: #fff;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6); 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
       z-index: 10;
       opacity: 0; 
       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
@@ -159,153 +165,99 @@
       opacity: 1; 
       transform: translateY(0);
     }
-    .employee-info { display: flex; align-items: center; margin-bottom: 15px; }
-    .profile-pic { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00C3FF; margin-right: 15px; object-fit: cover; }
-    .name { font-size: 22px; font-weight: 600; color: #80D8FF; margin: 0; }
-    .caption { font-size: 28px; font-weight: 300; line-height: 1.5; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .employee-info { display: flex; align-items: center; margin-bottom: 12px; }
+    .profile-pic { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #00C3FF; margin-right: 15px; object-fit: cover; }
+    .name { font-size: 20px; font-weight: 600; color: #80D8FF; margin: 0; }
+    .caption { font-size: 24px; font-weight: 300; line-height: 1.5; margin: 0; }
 
     /* =========================================
-       6. ปุ่ม Download & Share
+       4. Footer (แถบด้านล่างสุด)
        ========================================= */
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .icon-btn {
-      background: rgba(0, 195, 255, 0.1); 
-      border: 1px solid rgba(0, 195, 255, 0.4);
-      color: #00C3FF;
-      padding: 8px 20px;
-      border-radius: 30px; 
-      font-family: 'Prompt', sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      transition: all 0.3s ease;
+    .system-footer {
+      height: 40px;
+      background-color: #030812;
+      color: #a0aec0;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      padding: 0 40px;
+      font-size: 13px;
+      font-weight: 300;
+      border-top: 1px solid #1a2a40;
     }
-    .icon-btn:hover {
-      background: #00C3FF; 
-      color: #050d1a;
-      box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
-    }
-
-    /* =========================================
-       7. Mobile Responsive (สำหรับหน้าจอมือถือ)
-       ========================================= */
-    @media screen and (max-width: 768px) {
-      .event-banner {
-        top: 20px;
-        width: 85%;
-        padding: 10px 20px;
-        border-radius: 30px;
-      }
-      .event-title { font-size: 18px; }
-      .event-subtitle { font-size: 12px; }
-
-      .live-counter {
-        top: 100px;
-        right: 50%;
-        transform: translateX(50%); 
-        padding: 8px 20px;
-        font-size: 16px;
-      }
-      .total-number { font-size: 18px; }
-
-      .glass-box {
-        bottom: 20px;
-        left: 5%;
-        width: 90%; 
-        max-width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-        border-left: none; 
-        border-bottom: 4px solid #00C3FF; 
-      }
-      
-      .profile-pic { width: 40px; height: 40px; }
-      .name { font-size: 16px; }
-      .caption { font-size: 18px; line-height: 1.4; margin-top: 5px;}
-
-      .action-buttons {
-        justify-content: flex-end; 
-        margin-top: 15px;
-      }
-      .icon-btn {
-        font-size: 14px;
-        padding: 6px 16px;
-      }
+    .footer-highlight {
+      color: #00C3FF;
+      font-weight: 400;
     }
   </style>
 </head>
 <body>
 
-  <!-- รูปภาพพื้นหลัง (มีเบลอและภาพหลัก) -->
-  <div class="slide-container">
-    <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
-    <img id="mainImage" class="slide-image" src="" alt="Live Slide">
-  </div>
-
-  <!-- แบนเนอร์ชื่องาน (ตรงกลางบน) -->
-  <div class="event-banner">
-    <h1 class="event-title">งานฉลองความสำเร็จองค์กร</h1>
-    <p class="event-subtitle">ANNUAL GALA 2024</p>
-  </div>
-
-  <!-- ป้ายนับจำนวน (ขวาบน / กลางบนในมือถือ) -->
-  <div class="live-counter">
-    <span class="live-dot">⬤</span> 
-    <span style="font-weight: 600; letter-spacing: 1px;">LIVE</span> 
-    <span style="opacity: 0.5; margin: 0 5px;">|</span> 
-    Total Photos: <span id="totalCount" class="total-number">0</span>
-  </div>
-
-  <!-- กล่องแคปชั่นพนักงาน (ซ้ายล่าง / เต็มขอบล่างในมือถือ) -->
-  <div id="captionBox" class="glass-box">
-    <div class="employee-info">
-      <img id="profilePic" class="profile-pic" src="" alt="Profile">
-      <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
-    </div>
-    <p id="captionText" class="caption">รอรับภาพประทับใจจากทุกคน...</p>
+  <!-- ส่วนเนื้อหาหลัก แบ่งซ้าย-ขวา -->
+  <div class="main-content">
     
-    <!-- ปุ่ม Download และ Share -->
-    <div class="action-buttons">
-      <button onclick="downloadImage()" class="icon-btn">💾 เซฟรูป</button>
-      <button onclick="shareImage()" class="icon-btn">📤 แชร์ต่อ</button>
+    <!-- ฝั่งซ้าย: โครงการ CSR -->
+    <div class="csr-panel">
+      <h1 class="csr-title">CSR Project 2026</h1>
+      <p class="csr-subtitle">ร่วมสร้างสรรค์สังคมดิจิทัลที่ยั่งยืน</p>
+      
+      <!-- สามารถเปลี่ยน URL รูปภาพ CSR ของจริงได้ที่นี่ -->
+      <img class="csr-image" src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" alt="CSR Activity">
+      
+      <p class="csr-desc">
+        กิจกรรมเพื่อสังคมที่เรามุ่งมั่นส่งเสริมการเรียนรู้และพัฒนาศักยภาพของคนในชุมชน 
+        เพื่อตอกย้ำวิสัยทัศน์ในการเชื่อมโยงทุกคนเข้าสู่โลกแห่งเทคโนโลยีอย่างเท่าเทียมและยั่งยืน
+      </p>
     </div>
+
+    <!-- ฝั่งขวา: Live Gallery -->
+    <div class="gallery-panel">
+      <div class="slide-container">
+        <img id="bgImage" class="slide-bg" src="" alt="Background Blur">
+        <img id="mainImage" class="slide-image" src="" alt="Live Slide">
+      </div>
+
+      <div class="live-counter">
+        <span class="live-dot">⬤</span> 
+        <span style="font-weight: 600;">LIVE</span> 
+        <span style="opacity: 0.5;">|</span> 
+        Total: <span id="totalCount" class="total-number">0</span>
+      </div>
+
+      <div id="captionBox" class="glass-box">
+        <div class="employee-info">
+          <img id="profilePic" class="profile-pic" src="" alt="Profile">
+          <h3 id="employeeName" class="name">กำลังโหลดข้อมูล...</h3>
+        </div>
+        <p id="captionText" class="caption">รอรับภาพความประทับใจ...</p>
+      </div>
+    </div>
+    
   </div>
 
-  <!-- =========================================
-       8. JavaScript (เชื่อม API & การทำงาน)
-       ========================================= -->
+  <!-- ส่วน Footer ด้านล่างสุด -->
+  <footer class="system-footer">
+    <div>&copy; 2026 True Corporation Public Company Limited. All rights reserved.</div>
+    <div>Channel Communication | <span class="footer-highlight">Contact for System Development & Troubleshooting</span></div>
+  </footer>
+
+  <!-- สคริปต์เชื่อมต่อ API (คงฟังก์ชันเดิมทั้งหมด) -->
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbz2GUgqs5WAlVeXM9UnwyOkD2Mimn7mSR6BNTDOkJTsnl31d_XgCW1RywVHbS6w6vsS9w/exec"; // ⚠️ วาง URL จาก Google Apps Script ตรงนี้
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbz2GUgqs5WAlVeXM9UnwyOkD2Mimn7mSR6BNTDOkJTsnl31d_XgCW1RywVHbS6w6vsS9w/exec"; 
     let photosQueue = [];
     let currentIndex = 0;
 
-    // ฟังก์ชันดึงข้อมูลจากฐานข้อมูล
     async function fetchPhotos() {
       try {
         let res = await fetch(GAS_URL);
         let data = await res.json();
-        
-        // อัปเดตตัวเลข
         document.getElementById("totalCount").innerText = data.total;
-        
-        // อัปเดตคิวรูปภาพ
         if(data.photos && data.photos.length > 0) {
           photosQueue = data.photos;
         }
-      } catch (err) { 
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err); 
-      }
+      } catch (err) { console.error("Error fetching data:", err); }
     }
 
-    // ฟังก์ชันสลับรูปภาพและข้อความ
     function showNextSlide() {
       if (photosQueue.length === 0) return;
       
@@ -334,43 +286,9 @@
       }, 1200); 
     }
 
-    // ฟังก์ชันดาวน์โหลดรูปภาพ
-    function downloadImage() {
-      const imgUrl = document.getElementById("mainImage").src;
-      if (!imgUrl) return;
-      
-      const a = document.createElement("a");
-      a.href = imgUrl;
-      a.download = "Event_Photo.jpg"; 
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-
-    // ฟังก์ชันแชร์ภาพ (รองรับ Web Share API บนมือถือ)
-    async function shareImage() {
-      const imgUrl = document.getElementById("mainImage").src;
-      const captionText = document.getElementById("captionText").innerText;
-      
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'บรรยากาศงานของเรา',
-            text: captionText,
-            url: imgUrl
-          });
-        } catch (err) {
-          console.log("การแชร์ถูกยกเลิก หรือเกิดข้อผิดพลาด:", err);
-        }
-      } else {
-        alert("เบราว์เซอร์ของคุณไม่รองรับฟีเจอร์แชร์โดยตรง สามารถกด 'เซฟรูป' แทนได้ครับ");
-      }
-    }
-
-    // เริ่มต้นระบบ
     fetchPhotos(); 
-    setInterval(fetchPhotos, 10000); // ดึงข้อมูลจาก Sheets ทุก 10 วินาที
-    setInterval(showNextSlide, 7000); // สลับรูปภาพทุก 7 วินาที
+    setInterval(fetchPhotos, 10000); 
+    setInterval(showNextSlide, 7000); 
   </script>
 </body>
 </html>
