@@ -80,7 +80,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0; /* เอา Padding เดิมออก ไปใช้ใน frame-container แทน */
+      padding: 0; 
       box-sizing: border-box;
       overflow: hidden;
     }
@@ -88,8 +88,8 @@
     /* กล่องควบคุมกรอบ (ปรับให้กรอบเล็กลง) */
     .frame-container {
       position: relative;
-      width: 82%; /* ปรับให้แคบลง */
-      height: 78%; /* ปรับให้เตี้ยลง */
+      width: 82%; 
+      height: 78%; 
     }
 
     /* กรอบสไลด์โชว์ขอบมน (Floating Frame) */
@@ -97,7 +97,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      border-radius: 28px; /* กรอบโค้งมน */
+      border-radius: 28px; 
       overflow: hidden;
       background-color: #050d1a;
       box-shadow: 0 30px 60px rgba(0, 40, 120, 0.3); 
@@ -105,7 +105,7 @@
     }
 
     /* =========================================
-       2. ระบบสไลด์โชว์ (ภาพชนกรอบพอดีเป๊ะ)
+       2. ระบบสไลด์โชว์ (ภาพกางเต็ม 100% ไม่มีขอบดำ)
        ========================================= */
     .slide-container { 
       position: absolute; 
@@ -132,25 +132,24 @@
     .slide-image {
       position: relative;
       width: 100%; height: 100%;
-      object-fit: contain; /* รักษาสัดส่วนภาพไม่ให้โดนครอป */
+      object-fit: cover; /* เปลี่ยนเป็น cover เพื่อกางรูปให้เต็มกรอบเป๊ะๆ ไม่มีขอบดำ */
       opacity: 0; 
       transition: opacity 1s ease-in-out; 
       z-index: 2;
     }
     .slide-image.active {
       opacity: 1;
-      /* ลบเอฟเฟกต์หด/ขยายออก เพื่อให้ภาพวางชนขอบเฟรมพอดีเป๊ะ 100% เสมอ */
     }
 
     /* =========================================
        3. องค์ประกอบใน Gallery (ป้าย LIVE ลอยตัว & แถบข้อความ)
        ========================================= */
     
-    /* ป้าย LIVE ลอยทับมุมขวาบนของกรอบ */
+    /* ป้าย LIVE ลอยทับมุมขวาบนของกรอบเฟรม */
     .live-counter {
       position: absolute; 
-      top: -22px; 
-      right: 30px; 
+      top: -25px; /* ดันให้ลอยขึ้นไปคาบเกี่ยวเส้นขอบด้านบน */
+      right: 30px; /* ขยับเข้ามาจากมุมขวานิดหน่อยให้ดูสวยงาม */
       background: rgba(10, 37, 64, 0.9);
       padding: 8px 22px; 
       border-radius: 50px; 
@@ -279,10 +278,10 @@
     <!-- ฝั่งขวา: Live Gallery พื้นหลัง TQM -->
     <div class="gallery-panel">
       
-      <!-- คอนเทนเนอร์คุมระยะให้ป้าย Live ลอยได้ และกรอบเล็กลง -->
+      <!-- คอนเทนเนอร์คุมระยะ -->
       <div class="frame-container">
         
-        <!-- ป้าย LIVE ถูกดึงมาลอยไว้ตรงมุมขวาบนของกรอบ -->
+        <!-- ป้าย LIVE ลอยไว้ตรงขอบเฟรมด้านบน -->
         <div class="live-counter">
           <span class="live-dot">⬤</span> 
           <span style="font-weight: 600;">LIVE</span> 
