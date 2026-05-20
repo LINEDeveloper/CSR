@@ -400,67 +400,109 @@
     </div>
   </div>
 
-  <script>
-    let selectedImageBase64 = "";
+  // ⚠️ จุดที่ต้องแก้ไข 2 จุด
+  const GAS_URL = "ใส่_WEB_APP_URL_ที่นี่"; // วาง URL ของ Apps Script
+  const LIFF_ID = "ใส่_LIFF_ID_ที่นี่";    // วาง LIFF ID ของคุณ
 
-    // 1. Handles file selection and triggers interactive updates
-    function handleFileSelect(input) {
-      const file = input.files[0];
-      if (!file) return;
+  // 1. เชื่อมต่อระบบ LINE LIFF เมื่อเปิดหน้าเว็บ
+  async function main() {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    }
+  }
+  main();
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        selectedImageBase64 = e.target.result;
-        
-        // Update UI to show preview, adjust upload container appearance
-        document.getElementById('imagePreview').src = selectedImageBase64;
-        document.getElementById('previewContainer').style.display = 'block';
-        document.getElementById('uploadBox').style.borderColor = '#00c3ff';
-        document.getElementById('uploadBoxText').innerText = 'เปลี่ยนรูปภาพ';
-      };
-      reader.readAsDataURL(file);
+  let selectedImageBase64 = "";
+
+  // 2. ฟังก์ชันจัดการเมื่อผู้ใช้เลือกรูป
+  function handleFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      selectedImageBase64 = e.target.result;
+      document.getElementById('imagePreview').src = selectedImageBase64;
+      document.getElementById('previewContainer').style.display = 'block';
+      document.getElementById('uploadBox').style.borderColor = '#00c3ff';
+      document.getElementById('uploadBoxText').innerText = 'เปลี่ยนรูปภาพ';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearSelectedImage(event) {
+    event.stopPropagation();
+    document.getElementById('imageInput').value = "";
+    document.getElementById('imagePreview').src = "";
+    document.getElementById('previewContainer').style.display = 'none';
+    document.getElementById('uploadBox').style.borderColor = '#b2ebf2';
+    document.getElementById('uploadBoxText').innerText = 'กดเลือกรูปภาพจากมือถือ';
+    selectedImageBase64 = "";
+  }
+
+  // 3. ระบบส่งข้อมูลจริง (แทนที่ Simulation เดิม)
+  async function startLoadingSimulation() {
+    const fileInput = document.getElementById('imageInput').files[0];
+    const caption = document.getElementById('captionInput').value;
+
+    if (!fileInput) {
+      alert("กรุณาเลือกรูปภาพก่อนกดส่งข้อมูลครับ");
+      return;
     }
 
-    // 2. Clear image attachment resets the layout state cleanly
-    function clearSelectedImage(event) {
-      event.stopPropagation(); // Prevents input box click re-triggering
-      document.getElementById('imageInput').value = "";
-      document.getElementById('imagePreview').src = "";
-      document.getElementById('previewContainer').style.display = 'none';
-      document.getElementById('uploadBox').style.borderColor = '#b2ebf2';
-      document.getElementById('uploadBoxText').innerText = 'กดเลือกรูปภาพจากมือถือ';
-      selectedImageBase64 = "";
-    }
+    // เปิดหน้าจอโหลดดิ้ง
+    document.getElementById('loadingOverlay').classList.add('active');
+    document.getElementById('loadingText').innerText = "กำลังเชื่อมต่อระบบ...";
 
-    // 3. Simulates active background process workflow requested by user
-    function startLoadingSimulation() {
-      const fileInput = document.getElementById('imageInput').files[0];
-      if (!fileInput) {
-        alert("กรุณาเลือกรูปภาพก่อนกดส่งข้อมูลครับ");
-        return;
+    try {
+      // ดึงชื่อและรูปโปรไฟล์จาก LINE อัตโนมัติ
+      let displayName = "ไม่ทราบชื่อ";
+      let pictureUrl = "";
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        displayName = profile.displayName;
+        pictureUrl = profile.pictureUrl;
       }
 
-      // Activate screen blocker loading state
-      document.getElementById('loadingOverlay').classList.add('active');
-      
-      // Stage 1 Loading Message
-      setTimeout(() => {
-        document.getElementById('loadingText').innerText = "กำลังบันทึกข้อมูลลงฐานข้อมูล...";
-      }, 1200);
+      document.getElementById('loadingText').innerText = "กำลังอัปโหลดและบันทึกข้อมูล...";
 
-      // Stage 2 Open success notification overlay
-      setTimeout(() => {
+      // สร้างกล่องข้อมูลสำหรับส่งให้ Apps Script
+      const payload = {
+        displayName: displayName,
+        pictureUrl: pictureUrl,
+        caption: caption,
+        imageBase64: selectedImageBase64,
+        mimeType: fileInput.type
+      };
+
+      // ยิงข้อมูลไปที่ Google Apps Script
+      const response = await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        // หากส่งสำเร็จ ให้ปิดหน้าโหลด และเปิดหน้า Pop-up สีเขียว
         document.getElementById('loadingOverlay').classList.remove('active');
         document.getElementById('modalOverlay').classList.add('active');
-      }, 2500);
-    }
+      } else {
+        alert("เกิดข้อผิดพลาดจากระบบ: " + result.msg);
+        document.getElementById('loadingOverlay').classList.remove('active');
+      }
 
-    // 4. Redirect triggers the index platform link
-    function redirectToIndex() {
-      // In production, update this destination link to point towards the index gallery deployment url
-      alert("ระบบกำลังเปลี่ยนหน้าจอพาท่านไปยังหน้าประมวลภาพสด (Live Gallery) เอนจิ้นหลักหลักเรียบร้อย!");
-      document.getElementById('modalOverlay').classList.remove('active');
+    } catch (error) {
+      console.error("Error:", error);
+      alert("ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง");
+      document.getElementById('loadingOverlay').classList.remove('active');
     }
-  </script>
+  }
+
+  // 4. เมื่อกดปุ่มตกลงที่หน้าสำเร็จ ให้ปิดหน้าต่าง LINE อัตโนมัติ
+  function redirectToIndex() {
+    liff.closeWindow(); 
+  }
 </body>
 </html>
